@@ -89,8 +89,18 @@ $offset = ($paginator->currentPage - 1) * $perPage;
 if ($offset < 0) $offset = 0;
 
 // Get individual MVP card drops with pagination
-$sql = "SELECT * 
-FROM {$server->charMapDatabase}.dropped_mvp_card_log 
+// Ensure we're selecting all necessary fields including mvp_id for the image display
+$sql = "SELECT 
+    id,
+    char_name, 
+    mvp_id,
+    mvp_name, 
+    card_id,
+    card_name, 
+    drop_map, 
+    drop_date
+FROM 
+    {$server->charMapDatabase}.dropped_mvp_card_log 
 WHERE 1=1 $sqlpartial 
 ORDER BY id DESC 
 LIMIT $offset, $perPage";
@@ -100,7 +110,9 @@ $dropLogs = $sth->fetchAll();
 
 // Get MVP card drop statistics
 $sql = "SELECT 
+    mvp_id,
     mvp_name, 
+    card_id,
     card_name,
     char_name,
     COUNT(*) as drop_count,
@@ -109,13 +121,10 @@ FROM
     {$server->charMapDatabase}.dropped_mvp_card_log 
 WHERE 1=1 $sqlpartial 
 GROUP BY 
-    mvp_name, card_name, char_name 
+    mvp_id, mvp_name, card_id, card_name, char_name 
 ORDER BY 
     drop_count DESC 
 LIMIT 10";
-$sth = $server->connection->getStatement($sql);
-$sth->execute($bind);
-$dropStats = $sth->fetchAll();
 $sth = $server->connection->getStatement($sql);
 $sth->execute($bind);
 $dropStats = $sth->fetchAll();
@@ -132,10 +141,11 @@ $sth = $server->connection->getStatement($sql);
 $sth->execute();
 $cards = $sth->fetchAll();
 
-
 // Summary statistics
 $sql = "SELECT 
+    mvp_id,
     mvp_name, 
+    card_id,
     card_name, 
     COUNT(*) as drop_count,
     MIN(drop_date) as first_drop, 
@@ -143,7 +153,7 @@ $sql = "SELECT
 FROM 
     {$server->charMapDatabase}.dropped_mvp_card_log 
 GROUP BY 
-    mvp_name, card_name 
+    mvp_id, mvp_name, card_id, card_name 
 ORDER BY 
     drop_count DESC 
 LIMIT 10";

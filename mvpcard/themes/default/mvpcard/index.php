@@ -1,13 +1,13 @@
 <?php
-// FluxCP Addon: Mini-Boss Card Logs - View Template
-// Create this file at: addons/mvpcard/themes/default/mvpcard/miniboss.php
+// FluxCP Addon: MVP Card Logs - View Template
+// Create this file at: addons/mvpcard/themes/default/mvpcard/index.php
 
 if (!defined('FLUX_ROOT')) exit;
 ?>
 
-<h2>Mini-Boss Card Drop Logs</h2>
+<h2>MVP Card Drop Logs</h2>
 <div class="log-count">
-    <p><b>Displaying Top 10 Players Mini Boss Card Drops & latest Mini Boss card drop logs in this server.</b></p>
+    <p><b>Displaying Top 10 Players MVP Card Drops & latest MVP card drop logs in this server.</b></p>
 </div>
 
 <div class="search-form">
@@ -19,12 +19,12 @@ if (!defined('FLUX_ROOT')) exit;
             </div>
 
             <div class="field-row">
-                <label for="mini_boss_id">Mini-Boss Monster:</label>
-                <select name="mini_boss_id" id="mini_boss_id">
-                    <option value="">All Mini-Bosses</option>
-                    <?php foreach ($miniBosses as $mob): ?>
-                        <option value="<?php echo $mob->mini_boss_id ?>" <?php if ($params->get('mini_boss_id') == $mob->mini_boss_id) echo 'selected="selected"' ?>>
-                            <?php echo htmlspecialchars($mob->mini_boss_name) ?>
+                <label for="mvp_id">MVP Monster:</label>
+                <select name="mvp_id" id="mvp_id">
+                    <option value="">All MVPs</option>
+                    <?php foreach ($mvps as $mob): ?>
+                        <option value="<?php echo $mob->mvp_id ?>" <?php if ($params->get('mvp_id') == $mob->mvp_id) echo 'selected="selected"' ?>>
+                            <?php echo htmlspecialchars($mob->mvp_name) ?>
                         </option>
                     <?php endforeach ?>
                 </select>
@@ -70,7 +70,7 @@ if (!defined('FLUX_ROOT')) exit;
     </form>
 </div>
 
-<h3>Top 10 Players with Mini-Boss Card Drops</h3>
+<h3>Top 10 Players with MVP Card Drops</h3>
 <?php if (count($topPlayers) > 0): ?>
     <div class="table-container">
         <table class="horizontal-table">
@@ -101,13 +101,13 @@ if (!defined('FLUX_ROOT')) exit;
         </table>
     </div>
 <?php else: ?>
-    <p class="no-data">No Mini-Boss card drop data found.</p>
+    <p class="no-data">No MVP card drop data found.</p>
 <?php endif ?>
 
-<h3>Mini-Boss Card Drop Logs</h3>
+<h3>MVP Card Drop Logs</h3>
 <?php if ($total): ?>
     <div class="log-count">
-        <p><b>Displaying the latest Mini Boss card drop logs in this server.</b></p>
+        <p><b>Displaying the latest MVP card drop logs in this server.</b></p>
     </div>
     
     <div class="table-container">
@@ -115,7 +115,8 @@ if (!defined('FLUX_ROOT')) exit;
             <thead>
                 <tr>
                     <th>Character</th>
-                    <th>Mini-Boss Monster</th>
+                    <th>MVP</th>
+                    <th>Monster Name</th>
                     <th>Card</th>
                     <th>Map</th>
                     <th>Date/Time</th>
@@ -131,12 +132,16 @@ if (!defined('FLUX_ROOT')) exit;
                                 <?php echo htmlspecialchars($log->char_name) ?>
                             <?php endif ?>
                         </td>
+                        <td class="mvp-image-cell">
+                            <!-- Display MVP monster image only -->
+                            <img src="https://controlpanel.reunite-ro.com/data/monsters/<?php echo $log->mvp_id ?>.gif" 
+                                 alt="<?php echo htmlspecialchars($log->mvp_name) ?>" 
+                                 title="<?php echo htmlspecialchars($log->mvp_name) ?>" 
+                                 class="monster-image" />
+                        </td>
                         <td>
-                            <?php if ($auth->actionAllowed('monster', 'view')): ?>
-                                <?php echo htmlspecialchars($log->mini_boss_name) ?>
-                            <?php else: ?>
-                                <?php echo htmlspecialchars($log->mini_boss_name) ?>
-                            <?php endif ?>
+                            <!-- Display MVP monster name only -->
+                            <?php echo htmlspecialchars($log->mvp_name) ?>
                         </td>
                         <td>
                             <?php if ($auth->actionAllowed('item', 'view')): ?>
@@ -159,11 +164,11 @@ if (!defined('FLUX_ROOT')) exit;
         <?php echo $paginator->getHTML() ?>
     </div>
 <?php else: ?>
-    <p class="no-data">No Mini-Boss card drop logs found.</p>
+    <p class="no-data">No MVP card drop logs found.</p>
 <?php endif ?>
 
 <style type="text/css">
-/* Enhanced styles for Mini-Boss Card Logs */
+/* Enhanced styles for MVP Card Logs */
 .search-form {
     margin-bottom: 30px;
     background: #f8f9fa;
@@ -325,18 +330,22 @@ h3 {
 }
 
 .horizontal-table thead th:nth-child(2) {
-    background-color: #1e88e5; /* Total Drops column */
+    background-color: #1e88e5; /* MVP column */
 }
 
 .horizontal-table thead th:nth-child(3) {
-    background-color: #00acc1; /* First Drop column */
+    background-color: #039be5; /* Monster Name column */
 }
 
 .horizontal-table thead th:nth-child(4) {
-    background-color: #00897b; /* Last Drop column */
+    background-color: #00acc1; /* Card column */
 }
 
 .horizontal-table thead th:nth-child(5) {
+    background-color: #00897b; /* Map column */
+}
+
+.horizontal-table thead th:nth-child(6) {
     background-color: #43a047; /* Date/Time column */
 }
 
@@ -346,6 +355,18 @@ h3 {
 
 .horizontal-table tbody tr:last-child td {
     border-bottom: none;
+}
+
+/* MVP Image Cell */
+.mvp-image-cell {
+    text-align: center;
+    padding: 5px !important;
+}
+
+.monster-image {
+    max-width: 80px;
+    max-height: 80px;
+    vertical-align: middle;
 }
 
 /* Pagination styling */

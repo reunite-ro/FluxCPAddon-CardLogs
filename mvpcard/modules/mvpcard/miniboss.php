@@ -86,8 +86,18 @@ $offset = ($paginator->currentPage - 1) * $perPage;
 if ($offset < 0) $offset = 0;
 
 // Get individual Mini-Boss card drops with pagination
-$sql = "SELECT * 
-FROM {$server->charMapDatabase}.dropped_mini_boss_card_log 
+// Ensure we're explicitly selecting mini_boss_id for images
+$sql = "SELECT 
+    id,
+    char_name, 
+    mini_boss_id,
+    mini_boss_name, 
+    card_id,
+    card_name, 
+    drop_map, 
+    drop_date
+FROM 
+    {$server->charMapDatabase}.dropped_mini_boss_card_log 
 WHERE 1=1 $sqlpartial 
 ORDER BY id DESC 
 LIMIT $offset, $perPage";
